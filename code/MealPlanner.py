@@ -5,6 +5,7 @@ import tkinter as tk
 from tkinter import Canvas, BOTH
 from datetime import datetime, timedelta
 from random import randint
+from Meal import Meal
 
 #---------------------------------------------------------------
 
@@ -12,11 +13,13 @@ class MainWindow(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
 
-        # set the title of the main window
+        # set the title shown in the title bar of the main window
         self.title("Meal Planner")
 
-        # set size of the main window to 500 pixels tall and 500 pixels wide
-        self.geometry("1000x600")
+        # set size of the main window
+        windowWidth = 880
+        windowHeight = 400
+        self.geometry(str(windowWidth) + "x" + str(windowHeight))
  
         # Create a container that will contain each page that you can view in the program
         container = tk.Frame(self)
@@ -28,13 +31,13 @@ class MainWindow(tk.Tk):
         self.pages = {}
 
         # In a FOR LOOP, go through each of our available pages and add them to our page array
-        for P in (StartPage, Calendar): # for each page
+        for P in (MainMenuPage, CalendarPage): # for each page
             page = P(container, self) # create the page
             self.pages[P] = page  # store into pages
             page.grid(row=0, column=0, sticky="nsew") # stack the pages in the container's only grid cell
         
         # Call the show page method to show the main menu page when the program first starts.
-        self.show_page(StartPage)
+        self.show_page(MainMenuPage)
  
     # this method/function shows the page that you want to show 
     def show_page(self, name):
@@ -46,7 +49,7 @@ class MainWindow(tk.Tk):
  
 #---------------------------------------------------------------
 
-class StartPage(tk.Frame):
+class MainMenuPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
 
@@ -54,7 +57,7 @@ class StartPage(tk.Frame):
         label = tk.Label(self, text='Meal Planner')
 
         # When this button is clicked, tell the controller to show the 'Meal Planner' page.
-        planMealsButton = tk.Button(self, text='Plan some meals!', command=lambda : controller.show_page(Calendar))
+        planMealsButton = tk.Button(self, text='Plan some meals!', command=lambda : controller.show_page(CalendarPage))
 
         # ley the stuff out where we want it to be ont he menu page
         label.pack(pady=10, padx=10)
@@ -62,7 +65,7 @@ class StartPage(tk.Frame):
 
 #---------------------------------------------------------------
 
-class Calendar(tk.Frame):
+class CalendarPage(tk.Frame):
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
@@ -72,7 +75,7 @@ class Calendar(tk.Frame):
         #label.pack(pady=10, padx=10)        
 
         #TODO: go to player 2 setup
-        #backToMainMenuButton = tk.Button(self, text="Done!", command = lambda: controller.show_page(StartPage))
+        #backToMainMenuButton = tk.Button(self, text="Done!", command = lambda: controller.show_page(MainMenuPage))
 
         # Lay the stuff out on the page in the right places
 
@@ -174,10 +177,7 @@ def getRandomMeals():
 
     return chosenMeals
 
-class Meal:
-    def __init__(self, name):
-        self.name = name
-        #TODO: add ingredients, method, cooking time, serving size, difficulty, equipment, price rating
+
 
 #---------------------------------------------------------------
 
