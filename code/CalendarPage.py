@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import Canvas, BOTH, Frame
+from tkinter import Canvas, BOTH, Frame, Grid
 from datetime import datetime, timedelta
 from random import randint
 from Meal import Meal
@@ -10,11 +10,13 @@ class CalendarPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent) 
 
-        #TODO: navigate back to menu page
-        #backToMainMenuButton = tk.Button(self, text="Back to menu", command = lambda: controller.show_page(MainMenuPage))
+        #self.columnconfigure((0, 1, 2, 3, 4, 5, 6), weight=1)
+        for column in range(7):
+            Grid.columnconfigure(self, column, weight=1)
 
+        for row in range(2):
+            Grid.rowconfigure(self, row, weight=1)
 
-        
         # Get the date of the next Monday (today, if today is monday)
         dayInCurrentWeek = datetime.today()
         firstDayOfWeek = dayInCurrentWeek
@@ -27,10 +29,6 @@ class CalendarPage(tk.Frame):
             else:
                 dayInCurrentWeek = dayInCurrentWeek + timedelta(days=1)
 
-        print("firstDayOfWeek: " + str(firstDayOfWeek))
-
-        dayOfWeek = firstDayOfWeek
-
         fourteenDays = self.getDays(firstDayOfWeek)
 
         randomMeals = self.getRandomMeals()
@@ -38,6 +36,10 @@ class CalendarPage(tk.Frame):
         fourteenDaysWithMeals = self.assignMealsToDays(randomMeals, fourteenDays)
         
         self.drawCalendar(fourteenDaysWithMeals)
+
+        #TODO: navigate back to menu page
+        backToMainMenuButton = tk.Button(self, text="Back to menu", command = lambda: controller.show_page("MainMenuPage"))
+        backToMainMenuButton.grid(row=2,column=6, ipadx=5, ipady=5, padx=5, pady=5, sticky="NSEW")
 
     def assignMealsToDays(self, meals, days):
         numDays = len(days)
@@ -48,38 +50,26 @@ class CalendarPage(tk.Frame):
 
     def drawCalendar(self, daysToDraw):
 
-        cellWidth = 120
-        cellHeight = 110
+        #cellWidth = 120
+        #cellHeight = 110
         cellMargin = 5
         cellPadding = 5
 
-        canvas = Canvas(self)
-
-        weekNum = 0
-        for day in daysToDraw:
-            column = day.date.weekday()
-            row = weekNum
-            if column == 6 :
-                weekNum = weekNum + 1
-            topLeftXPosition = (cellMargin + cellWidth) * column + cellMargin    
-            topLeftYPosition = (cellMargin + cellHeight) * row + cellMargin
-            bottomRightXPosition = (cellMargin + cellWidth) * column + cellMargin + cellWidth
-            bottomRightYPosition = (cellMargin + cellHeight) * row + cellMargin + cellHeight
-            canvas.create_rectangle(topLeftXPosition, topLeftYPosition, bottomRightXPosition, bottomRightYPosition, outline="red", fill="white")
-            textTopLeftXPosition = topLeftXPosition + cellPadding
-            textTopLeftYPosition = topLeftYPosition + cellPadding
-            textWidth = cellWidth - (cellPadding * 2)
-            textHeight = cellHeight - (cellPadding * 2)
-            mealIndex = (row * 7) + column
-            meal = day.meal
-            cellText = day.date.strftime("%a %d %b") + "\n\n" + meal.name
-            showMealButton = tk.Button(self, text=cellText, command=lambda buttonText=cellText: self.popup_meal(buttonText))
-            showMealButton.place(x = textTopLeftXPosition, y = textTopLeftYPosition, width=textWidth, height=textHeight)
-                
-        canvas.pack(fill=BOTH, expand=1)
+        for row in range(2):
+            for column in range(7):
+                dayIndex = row + column
+                day = daysToDraw[dayIndex]
+                cellBackgroundColour = "white"
+                if day.date.strftime("%a %d %b") == datetime.today().strftime("%a %d %b"):
+                    cellBackgroundColour = "green"
+                meal = day.meal
+                cellText = day.date.strftime("%a %d %b") + "\n\n" + meal.name
+                showMealButton = tk.Button(self, text=cellText, command=lambda buttonText=cellText: self.popup_meal(buttonText))
+                showMealButton.grid(row=row,column=column, ipadx=cellPadding, ipady=cellPadding, padx=cellMargin, pady=cellMargin, sticky="NSEW")
 
     def popup_meal(self, val):
         #TODO: set a modal overlay on main window whilst this window is open.
+
         qw=tk.Tk()
         frame1 = Frame(qw, highlightbackground="green", highlightcolor="green",highlightthickness=1, bd=0)
         frame1.pack()

@@ -28,14 +28,17 @@ class MainWindow(tk.Tk):
         # Create an ARRAY that we will use to store all of the pages that we can view in the program
         self.pages = {}
 
-        # In a FOR LOOP, go through each of our available pages and add them to our page array
-        for P in (MainMenuPage, CalendarPage): # for each page
-            page = P(container, self) # create the page
-            self.pages[P] = page  # store into pages
-            page.grid(row=0, column=0, sticky="nsew") # stack the pages in the container's only grid cell
+        #TODO: give each page a base type "Page" that has a name property, then change this to a loop
+        m = MainMenuPage(container, self)
+        m.grid(row=0, column=0, sticky="nsew")
+        self.pages["MainMenuPage"] = m
+
+        c = CalendarPage(container, self)
+        c.grid(row=0, column=0, sticky="nsew")
+        self.pages["CalendarPage"] = c
         
         # Call the show page method to show the main menu page when the program first starts.
-        self.show_page(MainMenuPage)
+        self.show_page("MainMenuPage")
  
     # this method/function shows the page that you want to show 
     def show_page(self, name):
