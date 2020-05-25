@@ -3,6 +3,7 @@ from tkinter import Canvas, BOTH, Frame
 from datetime import datetime, timedelta
 from random import randint
 from Meal import Meal
+from CalendarDay import CalendarDay
 
 class CalendarPage(tk.Frame):
 
@@ -122,8 +123,3 @@ class CalendarPage(tk.Frame):
             days.append(CalendarDay(dayOfWeek, None))
 
         return days
-
-class CalendarDay:
-     def __init__(self, date, meal):
-        self.date = date
-        self.meal = meal
