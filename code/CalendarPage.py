@@ -43,45 +43,30 @@ class CalendarPage(tk.Frame):
 
         randomMeals = self.getRandomMeals()
 
-        # Create a 2 dimensional array. A two dimensional array is simply a list of lists.
-        grid = []
-        for row in range(rowCount):
-            # Add an empty array that will hold each cell in this row
-            grid.append([])
-            for column in range(columnCount):
-                grid[row].append(0)  # Append a cell
-                mealIndex = (row * 7) + column
-                meal = randomMeals[mealIndex]
-                grid[row][column] = dayOfWeek.strftime("%a %d %b") + "\n\n" + meal.name
-                dayOfWeek = dayOfWeek + timedelta(days=1)
+        fourteenDays = self.getDays(firstDayOfWeek)
 
-        # Loop until the user clicks the close button.
-        done = False
-        
         canvas = Canvas(self)
-        
-        # Draw the grid
-        for row in range(rowCount):
-            for column in range(columnCount):
-                color = "white"
-                if grid[row][column] == datetime.today().strftime("%a %d %b"):
-                    # Highlight the current day as green, if it is present in the view.
-                    color = "green"
-                topLeftXPosition = (cellMargin + cellWidth) * column + cellMargin    
-                topLeftYPosition = (cellMargin + cellHeight) * row + cellMargin
-                bottomRightXPosition = (cellMargin + cellWidth) * column + cellMargin + cellWidth
-                bottomRightYPosition = (cellMargin + cellHeight) * row + cellMargin + cellHeight
-                canvas.create_rectangle(topLeftXPosition, topLeftYPosition, bottomRightXPosition, bottomRightYPosition, outline="red", fill=color)
-                textTopLeftXPosition = topLeftXPosition + cellPadding
-                textTopLeftYPosition = topLeftYPosition + cellPadding
-                textWidth = cellWidth - (cellPadding * 2)
-                textHeight = cellHeight - (cellPadding * 2)
-                cellText = grid[row][column]
-                #label = tk.Label(self, text=text, wraplength=500, justify="center")
-                #label.place(x = textTopLeftXPosition, y = textTopLeftYPosition, width=textWidth, height=textHeight)
-                #TODO: right now, this always passes through the last cell's data. Need to change it so that each button has unique data.
-                showMealButton = tk.Button(self, text=cellText, command=lambda : self.popup_meal(cellText))
-                showMealButton.place(x = textTopLeftXPosition, y = textTopLeftYPosition, width=textWidth, height=textHeight)
+
+        weekNum = 0
+        for day in fourteenDays:
+            column = day.weekday()
+            row = weekNum
+            if column == 6 :
+                weekNum = weekNum + 1
+            topLeftXPosition = (cellMargin + cellWidth) * column + cellMargin    
+            topLeftYPosition = (cellMargin + cellHeight) * row + cellMargin
+            bottomRightXPosition = (cellMargin + cellWidth) * column + cellMargin + cellWidth
+            bottomRightYPosition = (cellMargin + cellHeight) * row + cellMargin + cellHeight
+            canvas.create_rectangle(topLeftXPosition, topLeftYPosition, bottomRightXPosition, bottomRightYPosition, outline="red", fill="white")
+            textTopLeftXPosition = topLeftXPosition + cellPadding
+            textTopLeftYPosition = topLeftYPosition + cellPadding
+            textWidth = cellWidth - (cellPadding * 2)
+            textHeight = cellHeight - (cellPadding * 2)
+            mealIndex = (row * 7) + column
+            meal = randomMeals[mealIndex]
+            cellText = dayOfWeek.strftime("%a %d %b") + "\n\n" + meal.name
+            showMealButton = tk.Button(self, text=cellText, command=lambda buttonText=cellText: self.popup_meal(buttonText))
+            showMealButton.place(x = textTopLeftXPosition, y = textTopLeftYPosition, width=textWidth, height=textHeight)
                 
         canvas.pack(fill=BOTH, expand=1)
 
@@ -120,3 +105,13 @@ class CalendarPage(tk.Frame):
             chosenMeals.append(meals[index])
 
         return chosenMeals
+
+    def getDays(self, firstDayOfWeek):
+        days = [firstDayOfWeek]
+
+        dayOfWeek = firstDayOfWeek
+        for x in range (13):
+            dayOfWeek = dayOfWeek + timedelta(days=1)
+            days.append(dayOfWeek)
+
+        return days
