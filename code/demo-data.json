@@ -1,0 +1,61 @@
+[
+    {
+        "name" : "Tasty Meal 1",
+        "description" : "this is an awesome meal, you gotta try it.",
+        "ingredients" : [
+            {
+                "name" : "ingredient 1",
+                "quantity" : "3",
+                "units" : "cup(s)",
+                "size" : "medium"
+            },
+            {
+                "name" : "ingredient 2",
+                "quantity" : "7",
+                "units" : "teaspoon(s)",
+                "size" : ""
+            },
+            {
+                "name" : "ingredient 2",
+                "quantity" : "2",
+                "units" : "",
+                "size" : "large"
+            }
+        ],
+        "method" : [
+            {
+                "stepNumber" : 1,
+                "stepDescription" : "Do the thing like this."
+            },
+            {
+                "stepNumber" : 2,
+                "stepDescription" : "THEN do the thing like this."
+            },{
+                "stepNumber" : 3,
+                "stepDescription" : "Finally, do the thing like this."
+            }
+        ],
+        "difficultyRating" : 3,
+        "equipment" : [
+            {
+                "name" : "spatula",
+                "quantityRequired" : 8
+            },
+            {
+                "name" : "egg cup",
+                "quantityRequired" : 17
+            }
+        ],
+        "priceRating" : 1,
+        "dietaryNotes" : [
+            {
+                "note" : "veggie"
+            },
+            {
+                "note" : "contains dairy"
+            }
+        ],
+        "prepTime" : "00:30:00",
+        "cookingTime" : "01:15:00"
+    }
+]

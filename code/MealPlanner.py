@@ -5,6 +5,7 @@ import tkinter as tk
 from MainMenuPage import MainMenuPage
 from CalendarPage import CalendarPage
 
+
 #---------------------------------------------------------------
 
 class MainWindow(tk.Tk):
