@@ -17,7 +17,12 @@ class MainWindow(tk.Tk):
         # set size of the main window
         windowWidth = 880
         windowHeight = 400
-        self.geometry(str(windowWidth) + "x" + str(windowHeight))
+        screen_width = self.winfo_screenwidth()
+        screen_height = self.winfo_screenheight()
+        x = (screen_width/2) - (windowWidth/2)
+        y = (screen_height/2) - (windowHeight/2)
+
+        self.geometry('%dx%d+%d+%d' % (windowWidth, windowHeight, x, y))
  
         # Create a container that will contain each page that you can view in the program
         container = tk.Frame(self)

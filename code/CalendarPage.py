@@ -79,10 +79,19 @@ class CalendarPage(tk.Frame):
             popupWindow.grab_release()
             popupWindow.destroy()
 
-        popupWindow = tk.Toplevel()
-        popupWindow.wm_geometry("200x200")
+        #TODO: instead of getting the centre of the screen, get the centre of the parent window.
+        w=400
+        h=200
+        screen_width = self.winfo_screenwidth()
+        screen_height = self.winfo_screenheight()
+        x = (screen_width/2) - (w/2)
+        y = (screen_height/2) - (h/2)
+
+        popupWindow = tk.Toplevel(bg="blue")
+        popupWindow.geometry('%dx%d+%d+%d' % (w, h, x, y))
         popupWindow.title("Meal Info")
         popupWindow.attributes ("-topmost", True)
+        popupWindow.overrideredirect(True)
         popupWindow.grab_set()
         lbl = tk.Label(popupWindow, text=val)
         lbl.grid()
