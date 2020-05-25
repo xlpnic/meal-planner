@@ -12,18 +12,7 @@ class CalendarPage(tk.Frame):
         #TODO: navigate back to menu page
         #backToMainMenuButton = tk.Button(self, text="Back to menu", command = lambda: controller.show_page(MainMenuPage))
 
-        # This sets the WIDTH and HEIGHT of each grid location
-        cellWidth = 120
-        cellHeight = 110
 
-        #This sets the margin between each cell
-        cellMargin = 5
-
-        # This sets the padding inside each cell
-        cellPadding = 5
-
-        columnCount = 7
-        rowCount = 2
         
         # Get the date of the next Monday (today, if today is monday)
         dayInCurrentWeek = datetime.today()
@@ -41,15 +30,33 @@ class CalendarPage(tk.Frame):
 
         dayOfWeek = firstDayOfWeek
 
+        fourteenDays = self.getDays(firstDayOfWeek)
+
         randomMeals = self.getRandomMeals()
 
-        fourteenDays = self.getDays(firstDayOfWeek)
+        fourteenDaysWithMeals = self.assignMealsToDays(randomMeals, fourteenDays)
+        
+        self.drawCalendar(fourteenDaysWithMeals)
+
+    def assignMealsToDays(self, meals, days):
+        numDays = len(days)
+        for x in range (numDays):
+            days[x].meal = meals[x]
+
+        return days
+
+    def drawCalendar(self, daysToDraw):
+
+        cellWidth = 120
+        cellHeight = 110
+        cellMargin = 5
+        cellPadding = 5
 
         canvas = Canvas(self)
 
         weekNum = 0
-        for day in fourteenDays:
-            column = day.weekday()
+        for day in daysToDraw:
+            column = day.date.weekday()
             row = weekNum
             if column == 6 :
                 weekNum = weekNum + 1
@@ -63,8 +70,8 @@ class CalendarPage(tk.Frame):
             textWidth = cellWidth - (cellPadding * 2)
             textHeight = cellHeight - (cellPadding * 2)
             mealIndex = (row * 7) + column
-            meal = randomMeals[mealIndex]
-            cellText = dayOfWeek.strftime("%a %d %b") + "\n\n" + meal.name
+            meal = day.meal
+            cellText = day.date.strftime("%a %d %b") + "\n\n" + meal.name
             showMealButton = tk.Button(self, text=cellText, command=lambda buttonText=cellText: self.popup_meal(buttonText))
             showMealButton.place(x = textTopLeftXPosition, y = textTopLeftYPosition, width=textWidth, height=textHeight)
                 
@@ -107,11 +114,16 @@ class CalendarPage(tk.Frame):
         return chosenMeals
 
     def getDays(self, firstDayOfWeek):
-        days = [firstDayOfWeek]
+        days = [CalendarDay(firstDayOfWeek, None)]
 
         dayOfWeek = firstDayOfWeek
         for x in range (13):
             dayOfWeek = dayOfWeek + timedelta(days=1)
-            days.append(dayOfWeek)
+            days.append(CalendarDay(dayOfWeek, None))
 
         return days
+
+class CalendarDay:
+     def __init__(self, date, meal):
+        self.date = date
+        self.meal = meal
