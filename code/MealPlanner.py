@@ -34,10 +34,11 @@ class MainWindow(tk.Tk):
         # Create an ARRAY that we will use to store all of the pages that we can view in the program
         self.pages = {}
 
-        #TODO: give each page a base type "Page" that has a name property, then change this to a loop
         m = MainMenuPage(container, self)
         m.grid(row=0, column=0, sticky="nsew")
         self.pages["MainMenuPage"] = m
+
+        #TODO: load meals here and pass them to the pages that need them
 
         c = CalendarPage(container, self)
         c.grid(row=0, column=0, sticky="nsew")
