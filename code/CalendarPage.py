@@ -11,11 +11,11 @@ class CalendarPage(tk.Frame):
         tk.Frame.__init__(self, parent) 
 
         #self.columnconfigure((0, 1, 2, 3, 4, 5, 6), weight=1)
-        for column in range(7):
-            Grid.columnconfigure(self, column, weight=1)
+        # for column in range(7):
+        #     Grid.columnconfigure(self, column, weight=1)
 
-        for row in range(2):
-            Grid.rowconfigure(self, row, weight=1)
+        # for row in range(2):
+        #     Grid.rowconfigure(self, row, weight=1)
 
         # Get the date of the next Monday (today, if today is monday)
         dayInCurrentWeek = datetime.today()
@@ -54,7 +54,7 @@ class CalendarPage(tk.Frame):
         #cellHeight = 110
         cellMargin = 5
         cellPadding = 5
-
+        
         for row in range(2):
             for column in range(7):
                 dayIndex = row + column
@@ -64,23 +64,30 @@ class CalendarPage(tk.Frame):
                     cellBackgroundColour = "green"
                 meal = day.meal
                 cellText = day.date.strftime("%a %d %b") + "\n\n" + meal.name
-                showMealButton = tk.Button(self, text=cellText, command=lambda buttonText=cellText: self.popup_meal(buttonText))
-                showMealButton.grid(row=row,column=column, ipadx=cellPadding, ipady=cellPadding, padx=cellMargin, pady=cellMargin, sticky="NSEW")
+                
+                dayBoxFrame = Frame(self, highlightbackground="blue", highlightthickness=2, bd=0)
+                
+                showMealButton = tk.Button(dayBoxFrame, text=cellText, height=4, width=13, command=lambda buttonText=cellText: self.popup_meal(buttonText), bg=cellBackgroundColour, bd=0, relief=tk.FLAT)
+                
+                showMealButton.pack(anchor=tk.CENTER, fill=tk.BOTH, expand=tk.YES)
+                #showMealButton.config(borderwidth=2, highlightbackground = "red", highlightcolor= "red")
+                #showMealButton.grid(row=row,column=column, ipadx=cellPadding, ipady=cellPadding, padx=cellMargin, pady=cellMargin)
+                dayBoxFrame.grid(row=row, column=column, ipadx=cellPadding, ipady=cellPadding, padx=cellMargin, pady=cellMargin)
 
     def popup_meal(self, val):
-        #TODO: set a modal overlay on main window whilst this window is open.
+        def closePopupWindow():
+            popupWindow.grab_release()
+            popupWindow.destroy()
 
-        qw=tk.Tk()
-        frame1 = Frame(qw, highlightbackground="green", highlightcolor="green",highlightthickness=1, bd=0)
-        frame1.pack()
-        qw.overrideredirect(1)
-        #TODO: get this to appear in the centre of the main window...
-        qw.geometry("200x200+100+100")
-        lbl = tk.Label(frame1, text="Meal_" + str(val))
-        lbl.pack()
-        no_btn = tk.Button(frame1, text="Done", bg="light blue", fg="red",command=qw.destroy, width=10)
-        no_btn.pack(padx=10, pady=10)
-        qw.mainloop()
+        popupWindow = tk.Toplevel()
+        popupWindow.wm_geometry("200x200")
+        popupWindow.title("Meal Info")
+        popupWindow.attributes ("-topmost", True)
+        popupWindow.grab_set()
+        lbl = tk.Label(popupWindow, text=val)
+        lbl.grid()
+        no_btn = tk.Button(popupWindow, text="Done", bg="light blue", fg="red", command=closePopupWindow, width=10)
+        no_btn.grid()
 
     # Generate 14 days worth of random meals
     def getRandomMeals(self):
