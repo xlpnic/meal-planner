@@ -87,16 +87,22 @@ class CalendarPage(tk.Frame):
         x = (screen_width/2) - (w/2)
         y = (screen_height/2) - (h/2)
 
-        popupWindow = tk.Toplevel(bg="blue")
+        popupWindow = tk.Toplevel()
         popupWindow.geometry('%dx%d+%d+%d' % (w, h, x, y))
         popupWindow.title("Meal Info")
         popupWindow.attributes ("-topmost", True)
         popupWindow.overrideredirect(True)
         popupWindow.grab_set()
-        lbl = tk.Label(popupWindow, text=val)
-        lbl.grid()
-        no_btn = tk.Button(popupWindow, text="Done", bg="light blue", fg="red", command=closePopupWindow, width=10)
-        no_btn.grid()
+
+        popupWindow.columnconfigure(0, weight=1)
+        popupWindow.rowconfigure(0, weight=1)
+
+        popupWindowFrame = Frame(popupWindow, highlightbackground="red", highlightthickness=2, bd=0, bg="blue")
+        lbl = tk.Label(popupWindowFrame, text=val)
+        lbl.pack()
+        no_btn = tk.Button(popupWindowFrame, text="Done", bg="light blue", fg="red", command=closePopupWindow, width=10)
+        no_btn.pack()
+        popupWindowFrame.grid(column=0, row=0, ipadx=10, ipady=10, sticky="NSEW")
 
     # Generate 14 days worth of random meals
     def getRandomMeals(self):
