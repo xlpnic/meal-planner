@@ -10,14 +10,20 @@ class CalendarPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent) 
 
-        #self.columnconfigure((0, 1, 2, 3, 4, 5, 6), weight=1)
-        # for column in range(7):
-        #     Grid.columnconfigure(self, column, weight=1)
+        firstDayOfWeek = self.getNextMondayDate()
 
-        # for row in range(2):
-        #     Grid.rowconfigure(self, row, weight=1)
+        fourteenDays = self.getDays(firstDayOfWeek)
 
-        # Get the date of the next Monday (today, if today is monday)
+        fourteenRandomMeals = self.getRandomMeals()
+
+        fourteenDaysWithMeals = self.assignMealsToDays(fourteenRandomMeals, fourteenDays)
+        
+        self.drawCalendar(fourteenDaysWithMeals)
+
+        backToMainMenuButton = tk.Button(self, text="Back to menu", command = lambda: controller.show_page("MainMenuPage"))
+        backToMainMenuButton.grid(row=2,column=6, ipadx=5, ipady=5, padx=5, pady=5, sticky="NSEW")
+    
+    def getNextMondayDate(self):
         dayInCurrentWeek = datetime.today()
         firstDayOfWeek = dayInCurrentWeek
         
@@ -28,18 +34,7 @@ class CalendarPage(tk.Frame):
                 firstDayOfWeek = dayInCurrentWeek
             else:
                 dayInCurrentWeek = dayInCurrentWeek + timedelta(days=1)
-
-        fourteenDays = self.getDays(firstDayOfWeek)
-
-        randomMeals = self.getRandomMeals()
-
-        fourteenDaysWithMeals = self.assignMealsToDays(randomMeals, fourteenDays)
-        
-        self.drawCalendar(fourteenDaysWithMeals)
-
-        #TODO: navigate back to menu page
-        backToMainMenuButton = tk.Button(self, text="Back to menu", command = lambda: controller.show_page("MainMenuPage"))
-        backToMainMenuButton.grid(row=2,column=6, ipadx=5, ipady=5, padx=5, pady=5, sticky="NSEW")
+        return firstDayOfWeek
 
     def assignMealsToDays(self, meals, days):
         numDays = len(days)
@@ -67,14 +62,14 @@ class CalendarPage(tk.Frame):
                 
                 dayBoxFrame = Frame(self, highlightbackground="blue", highlightthickness=2, bd=0)
                 
-                showMealButton = tk.Button(dayBoxFrame, text=cellText, height=4, width=13, command=lambda buttonText=cellText: self.popup_meal(buttonText), bg=cellBackgroundColour, bd=0, relief=tk.FLAT)
+                showMealButton = tk.Button(dayBoxFrame, text=cellText, height=4, width=13, command=lambda chosenMeal=meal: self.popup_meal(chosenMeal), bg=cellBackgroundColour, bd=0, relief=tk.FLAT)
                 
                 showMealButton.pack(anchor=tk.CENTER, fill=tk.BOTH, expand=tk.YES)
                 #showMealButton.config(borderwidth=2, highlightbackground = "red", highlightcolor= "red")
                 #showMealButton.grid(row=row,column=column, ipadx=cellPadding, ipady=cellPadding, padx=cellMargin, pady=cellMargin)
                 dayBoxFrame.grid(row=row, column=column, ipadx=cellPadding, ipady=cellPadding, padx=cellMargin, pady=cellMargin)
 
-    def popup_meal(self, val):
+    def popup_meal(self, chosenMeal):
         def closePopupWindow():
             popupWindow.grab_release()
             popupWindow.destroy()
@@ -98,7 +93,7 @@ class CalendarPage(tk.Frame):
         popupWindow.rowconfigure(0, weight=1)
 
         popupWindowFrame = Frame(popupWindow, highlightbackground="red", highlightthickness=2, bd=0, bg="blue")
-        lbl = tk.Label(popupWindowFrame, text=val)
+        lbl = tk.Label(popupWindowFrame, text=chosenMeal.name)
         lbl.pack()
         no_btn = tk.Button(popupWindowFrame, text="Done", bg="light blue", fg="red", command=closePopupWindow, width=10)
         no_btn.pack()
