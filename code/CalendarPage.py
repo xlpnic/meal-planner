@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import Canvas, BOTH
+from tkinter import Canvas, BOTH, Frame
 from datetime import datetime, timedelta
 from random import randint
 from Meal import Meal
@@ -76,11 +76,28 @@ class CalendarPage(tk.Frame):
                 textTopLeftYPosition = topLeftYPosition + cellPadding
                 textWidth = cellWidth - (cellPadding * 2)
                 textHeight = cellHeight - (cellPadding * 2)
-                text = grid[row][column]
-                label = tk.Label(self, text=text, wraplength=500, justify="center")
-                label.place(x = textTopLeftXPosition, y = textTopLeftYPosition, width=textWidth, height=textHeight)
+                cellText = grid[row][column]
+                #label = tk.Label(self, text=text, wraplength=500, justify="center")
+                #label.place(x = textTopLeftXPosition, y = textTopLeftYPosition, width=textWidth, height=textHeight)
+                #TODO: right now, this always passes through the last cell's data. Need to change it so that each button has unique data.
+                showMealButton = tk.Button(self, text=cellText, command=lambda : self.popup_meal(cellText))
+                showMealButton.place(x = textTopLeftXPosition, y = textTopLeftYPosition, width=textWidth, height=textHeight)
                 
         canvas.pack(fill=BOTH, expand=1)
+
+    def popup_meal(self, val):
+        #TODO: set a modal overlay on main window whilst this window is open.
+        qw=tk.Tk()
+        frame1 = Frame(qw, highlightbackground="green", highlightcolor="green",highlightthickness=1, bd=0)
+        frame1.pack()
+        qw.overrideredirect(1)
+        #TODO: get this to appear in the centre of the main window...
+        qw.geometry("200x200+100+100")
+        lbl = tk.Label(frame1, text="Meal_" + str(val))
+        lbl.pack()
+        no_btn = tk.Button(frame1, text="Done", bg="light blue", fg="red",command=qw.destroy, width=10)
+        no_btn.pack(padx=10, pady=10)
+        qw.mainloop()
 
     # Generate 14 days worth of random meals
     def getRandomMeals(self):
