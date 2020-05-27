@@ -1,7 +1,14 @@
 class Meal:
-    def __init__(self, name, description, ingredients, method):
+    def __init__(self, name, description, ingredients, method, difficultyRating, equipment, priceRating, dietaryNotes, prepTime, cookingTime):
         self.name = name
         self.description = description
         self.ingredients = ingredients
         self.method = method
-        #TODO: add method, prep time, cooking time (active time vs passive time), total time, serving size, difficulty, equipment, price rating, veggie/vegan/meat
+        self.difficultyRating = difficultyRating
+        self.equipment = equipment
+        self.priceRating = priceRating
+        self.dietaryNotes = dietaryNotes
+        self.prepTime = prepTime
+        self.cookingTime = cookingTime
+        self.totalTime = self.prepTime + self.cookingTime
+        #TODO: add active vs passive cooking time, serving size

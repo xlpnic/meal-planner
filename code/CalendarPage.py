@@ -4,9 +4,13 @@ from datetime import datetime, timedelta
 from random import randint
 from Meal import Meal
 from Ingredient import Ingredient
+from Equipment import Equipment
+from DietaryNote import DietaryNote
 from CalendarDay import CalendarDay
 from MethodStep import MethodStep
 import json
+import re
+from datetime import timedelta
 
 class CalendarPage(tk.Frame):
 
@@ -51,7 +55,28 @@ class CalendarPage(tk.Frame):
             for methodStepData in methodStepsObject:
                 newMethodStep = MethodStep(methodStepData['stepNumber'], methodStepData['stepDescription'])
                 methodSteps.append(newMethodStep)
-            newMeal = Meal(mealData['name'], mealData['description'], ingredients, methodSteps)
+            equipmentObject = mealData['equipment']
+            equipment = []
+            for equipmentData in equipmentObject:
+                newEquipment = Equipment(equipmentData['name'], equipmentData['quantityRequired'])
+                equipment.append(newEquipment)
+            dietaryNotesObject = mealData['dietaryNotes']
+            dietaryNotes = []
+            for dietaryNotesData in dietaryNotesObject:
+                newdietaryNote = DietaryNote(dietaryNotesData['note'])
+                dietaryNotes.append(newdietaryNote)
+
+            prepTimeObject = mealData['prepTime']
+            prepTime = timedelta(hours=prepTimeObject['hours'], minutes=prepTimeObject['minutes'], seconds=prepTimeObject['seconds'])
+
+            print("prepTime: " + str(prepTime))
+
+            cookingTimeObject = mealData['cookingTime']
+            cookingTime = timedelta(hours=cookingTimeObject['hours'], minutes=cookingTimeObject['minutes'], seconds=cookingTimeObject['seconds'])
+
+            print("cookingTime: " + str(cookingTime))
+            
+            newMeal = Meal(mealData['name'], mealData['description'], ingredients, methodSteps, mealData['difficultyRating'], equipment, mealData['priceRating'], dietaryNotes, prepTime, cookingTime)
             meals.append(newMeal)
         
         return meals
@@ -117,7 +142,7 @@ class CalendarPage(tk.Frame):
 
         #TODO: instead of getting the centre of the screen, get the centre of the parent window.
         w=400
-        h=400
+        h=600
         screen_width = self.winfo_screenwidth()
         screen_height = self.winfo_screenheight()
         x = (screen_width/2) - (w/2)
@@ -134,10 +159,26 @@ class CalendarPage(tk.Frame):
         popupWindow.rowconfigure(0, weight=1)
 
         popupWindowFrame = Frame(popupWindow, highlightbackground="red", highlightthickness=2, bd=0, bg="blue")
+        
         mealNameLabel = tk.Label(popupWindowFrame, text=chosenMeal.name)
         mealNameLabel.pack()
         mealDescriptionLabel = tk.Label(popupWindowFrame, text=chosenMeal.description)
         mealDescriptionLabel.pack()
+        mealdifficultyRatingLabel = tk.Label(popupWindowFrame, text="Difficulty Rating: " + str(chosenMeal.difficultyRating) + "/5")
+        mealdifficultyRatingLabel.pack()
+        mealpriceRatingLabel = tk.Label(popupWindowFrame, text="Price Rating: " + str(chosenMeal.priceRating) + "/5")
+        mealpriceRatingLabel.pack()
+        prepTimeLabel = tk.Label(popupWindowFrame, text="Prep Time: " + str(chosenMeal.prepTime))
+        prepTimeLabel.pack()
+        cookingTimeLabel = tk.Label(popupWindowFrame, text="Cooking Time: " + str(chosenMeal.cookingTime))
+        cookingTimeLabel.pack()
+        totalTimeLabel = tk.Label(popupWindowFrame, text="Total Time: " + str(chosenMeal.totalTime))
+        totalTimeLabel.pack()
+        mealDietaryNotesTitleLabel = tk.Label(popupWindowFrame, text="Dietary Notes:")
+        mealDietaryNotesTitleLabel.pack()
+        for dietaryNote in chosenMeal.dietaryNotes:
+            dietaryNoteLabel = tk.Label(popupWindowFrame, text=dietaryNote.note)
+            dietaryNoteLabel.pack()
         ingredientsTitleLabel = tk.Label(popupWindowFrame, text="Ingredients:")
         ingredientsTitleLabel.pack()
         for ingredient in chosenMeal.ingredients:
@@ -145,11 +186,18 @@ class CalendarPage(tk.Frame):
             ingredientLabel.pack()
         methodTitleLabel = tk.Label(popupWindowFrame, text="Method:")
         methodTitleLabel.pack()
+        equipmentTitleLabel = tk.Label(popupWindowFrame, text="Equipment Needed:")
+        equipmentTitleLabel.pack()
+        for equipment in chosenMeal.equipment:
+            equipmentLabel = tk.Label(popupWindowFrame, text="• " + equipment.name + " x" + str(equipment.quantityRequired))
+            equipmentLabel.pack()
         for methodStep in chosenMeal.method:
             methodStepLabel = tk.Label(popupWindowFrame, text=str(methodStep.stepNumber) + ") " + methodStep.stepDescription)
             methodStepLabel.pack()
+
         no_btn = tk.Button(popupWindowFrame, text="Done", bg="light blue", fg="red", command=closePopupWindow, width=10)
         no_btn.pack()
+
         popupWindowFrame.grid(column=0, row=0, ipadx=10, ipady=10, sticky="NSEW")
 
     # Generate 14 days worth of random meals
